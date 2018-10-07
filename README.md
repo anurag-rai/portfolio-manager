@@ -9,12 +9,24 @@ To install the dependencies of the project:
 $ npm install
 ```
 
+## Libraries/Frameworks
+
+- `config` - Keeping dev/test/production environment
+- `fawn` - Provides atomicity and rollback to DB transactions
+- `joi` - Object Schema validation
+- `joi-objectid` - Validation ObjectID support for Joi
+- `winston` - Logger
+- `express-async-errors` - An async/await support hack for ExpressJS
+
+
 ## Dev Setup
 
 - nodemon
-- jest
+- jest (No tests currently written)
+
 
 # API Documentation
+
 
 
 |:-----------:|:------------------------------:|:--------------------------------------------------------------:|:-------:|:--------------:|
@@ -43,5 +55,4 @@ $ npm install
 |     POST    |    /api/trades/<portfolioId>   |                 Add a new trade to a portfolio                 |         |                |
 |     PUT     | /api/trades/<portfolioId>/<id> |        Modify a current trade in the specified portfolio       |         |                |
 |    DELETE   | /api/trades/<portfolioId>/<id> |        Delete a current trade in the specified portfolio       |         |                |
-
 
