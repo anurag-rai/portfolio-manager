@@ -9,7 +9,7 @@ module.exports = function(app) {
   app.use(express.json());
   app.use('/api/stocks', stocks);
   app.use('/api/trades', trades);
-  app.use('/api/basePortfolios', basePortfolios);
+  app.use('/api/baseportfolios', basePortfolios);
   app.use('/api/portfolios', portfolios);
   app.use(error);
 }
