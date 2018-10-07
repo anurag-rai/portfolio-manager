@@ -27,8 +27,6 @@ $ npm install
 
 # API Documentation
 
-
-
 |:-----------:|:------------------------------:|:--------------------------------------------------------------:|:-------:|:--------------:|
 |     GET     |      /api/baseportfolios/      |         Returns all portfolios that the client can get         |         |                |
 |     GET     |    /api/baseportfolios/<id>    |         Returns the baseportfolio specified by the <id>        |         |                |
