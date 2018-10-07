@@ -1,40 +1,76 @@
 const validateObjectId = require('../middleware/validateObjectId');
 // const auth = require('../middleware/auth');
-// const admin = require('../middleware/admin');
 
 const {Trade, validate, validateTradeForPut} = require('../models/trade');
 const {Stock} = require('../models/stock');
+const tradeUtils = require('../utils/tradeUtils');
 const mongoose = require('mongoose');
+const Fawn = require('fawn');
 const express = require('express');
 const router = express.Router();
 
+Fawn.init(mongoose);
+
 // Get all trades
-router.get('/', async (req, res) => {
-  const trades = await Trade.find().sort('_id');
-  res.send(trades.reverse());
+// TODO: add auth middleware for authorization
+router.get('/:portfolioId', async (req, res) => {
+  //check if the portfolioId is valid
+  const portfolio = await tradeUtils.checkValidPortfolio(req.params.portfolioId);
+  if ( portfolio['valid'] === false )
+    return res.status(400).send('The portfolio is not valid');
+  
+  console.log("portfolio: ", portfolio);
+  //get trades from the portfolio
+  const tradesList = await tradeUtils.getTradesFromPortfolio(portfolio['obj']);
+  console.log("TradesList: ", tradesList);
+  
+  const trades = await Trade.find({ '_id' : {$in: tradesList}});
+  console.log("Trades: ", trades);
+  res.send(trades);
 });
+
 
 // Add a new trade.
 // TODO: add auth middleware for authorization
-router.post('/', async (req, res) => {
+router.post('/:portfolioId', async (req, res) => {
   const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
+  //check if the portfolioId is valid
+  const portfolio = await tradeUtils.checkValidPortfolio(req.params.portfolioId);
+  if ( !portfolio['valid]'] === false )
+    return res.status(400).send('The portfolio is not valid');
+
+  //check if stock in portfolio
+  if ( portfolio['obj']['stocks'].indexOf(req.body.stock) < 0 )
+    return res.status(400).send('The stock is not valid in this portfolio');
+  
   //get rate of the stock
   const stock = await Stock.find({name: req.body.stock});
   if (stock.length === 0) return res.status(400).send('The stock with the given Name does not exist.');
-  // console.log("Stock, ", stock);
-  // console.log("First, ", stock[0]);
-  trade = new Trade({
+
+  const trade = new Trade({
     stock: req.body.stock,
     quantity: req.body.quantity,
     action: req.body.action,
     rate: stock[0]['rate']   //TODO: Tight coupling. Change this. Myabe us a Stock API?
   });
 
-  trade = await trade.save();
+  // Need atomicity to save both Trade and to Portfolio
+  try {
+    new Fawn.Task()
+      .save('trades', trade)
+      .update('portfolios', { _id: req.params.portfolioId }, { 
+        $addToSet: { trades: {$ojFuture: "0._id"} }
+      })
+      .run({useMongoose: true});
   
-  res.send(trade);
+    res.send(trade);
+  }
+  catch(ex) {
+    throw new Error(ex.message);
+    res.status(500).send('Something failed while updating trade');
+  }
 });
 
 
