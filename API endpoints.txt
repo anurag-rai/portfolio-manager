@@ -1,21 +1,61 @@
 Listing all API Endpoints:
-
+-------------------------------------------------------
 
 GET /portfolio
-Return the entire portfolio with trades
+Return all entire portfolio with trades
 
+-------------------------------------------------------
 
-GET /portfolio/holdings
+GET /portfolio/:id
+Returns the portfolio with the id
+
+-------------------------------------------------------
+
+GET /portfolio/:portfolio/holdings
 Get holdings in an aggregate view
 
+-------------------------------------------------------
 
-GET /portfolio/returns
+GET /portfolio/:portfolio/returns
 Get cumulative returns
 
-POST /portfolio/addTrade
+-------------------------------------------------------
 
+POST /portfolio/:portfolio/addTrade
+{
+	stock: "stockName",
+	quantity: integer,
+	action: "buy/sell"
+}
+{
+	success: boolean,
+	data: Trade object - has id,stock,quantity, action, rate, timestamp
+}
 
-POST /portfolio/updateTrade
+-------------------------------------------------------
 
+PUT /portfolio/:portfolio/updateTrade
+{
+	id: "TradeID",
+	stock: "stockName",
+	quantity:
+	action:
+}
+Return payload:
+{
+	success: boolean,
+	data: Updated Trade object
+}
 
-POST /portfolio/removeTrade
+-------------------------------------------------------
+
+DELETE /portfolio/:portfolio/removeTrade
+{
+	id: "TradeID"
+}
+{
+	success: boolean,
+	data: Deleted trade object
+}
+
+-------------------------------------------------------
