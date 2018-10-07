@@ -1,0 +1,21 @@
+Listing all API Endpoints:
+
+
+GET /portfolio
+Return the entire portfolio with trades
+
+
+GET /portfolio/holdings
+Get holdings in an aggregate view
+
+
+GET /portfolio/returns
+Get cumulative returns
+
+POST /portfolio/addTrade
+
+
+POST /portfolio/updateTrade
+
+
+POST /portfolio/removeTrade
