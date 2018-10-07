@@ -8,6 +8,12 @@ To install the dependencies of the project:
 ```sh
 $ npm install
 ```
+## Start
+
+To run the server:
+```sh
+$ node server.js
+```
 
 ## Libraries/Frameworks
 
@@ -18,17 +24,19 @@ $ npm install
 - `winston` - Logger
 - `express-async-errors` - An async/await support hack for ExpressJS
 
-
 ## Dev Setup
 
 - nodemon
 - jest (No tests currently written)
 
+To run the server:
+```sh
+$ nodemon server.js
+```
 
 ## API Documentation
 
 [List of APIs](https://github.com/anurag-rai/portfolio-manager/wiki/API-Documentation)
-
 
 ## Idea
 
