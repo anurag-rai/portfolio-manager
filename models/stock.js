@@ -20,7 +20,7 @@ const Stock = mongoose.model('Stock', stockSchema);
 
 function validateStock(stock) {
   const schema = {
-    name: Joi.string().min(1).max(50).required(),
+    name: Joi.string().regex(/^[a-zA-Z_]+$/).min(1).max(50).required(),
     rate: Joi.number().integer().min(1).required()
   };
 
@@ -29,7 +29,7 @@ function validateStock(stock) {
 
 function validateStockForPut(stock) {
   const schema = Joi.object().keys({
-    name: Joi.string().min(1).max(50),
+    name: Joi.string().regex(/^[a-zA-Z_]+$/).min(1).max(50),
     rate: Joi.number().integer().min(1)
   }).or('name', 'rate');
 
