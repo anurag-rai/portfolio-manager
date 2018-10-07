@@ -26,3 +26,5 @@ $ npm install
 
 
 ## API Documentation
+
+[List of APIs](https://github.com/anurag-rai/portfolio-manager/wiki/API-Documentation)
