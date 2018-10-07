@@ -1,4 +1,21 @@
-| HTTP Method |          API Endpoint          |                            Function                            | Payload | Return Payload |
+# Portfolio Management
+
+## Installation
+
+You need to have NodeJS and MongoDB to run this application.
+
+To install the dependencies of the project:
+```sh
+$ npm install
+```
+
+# Dev Setup
+
+- nodemon
+- jest
+
+# API Documentation
+
 |:-----------:|:------------------------------:|:--------------------------------------------------------------:|:-------:|:--------------:|
 |     GET     |      /api/baseportfolios/      |         Returns all portfolios that the client can get         |         |                |
 |     GET     |    /api/baseportfolios/<id>    |         Returns the baseportfolio specified by the <id>        |         |                |
