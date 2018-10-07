@@ -9,12 +9,13 @@ To install the dependencies of the project:
 $ npm install
 ```
 
-# Dev Setup
+## Dev Setup
 
 - nodemon
 - jest
 
 # API Documentation
+
 
 |:-----------:|:------------------------------:|:--------------------------------------------------------------:|:-------:|:--------------:|
 |     GET     |      /api/baseportfolios/      |         Returns all portfolios that the client can get         |         |                |
