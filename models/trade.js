@@ -4,10 +4,6 @@ const {stockSchema} = require('./stock');
 
 
 const tradeSchema = new mongoose.Schema({
-  // _id: {
-  //   type: String,
-  //   unique: true
-  // },
   stock: { 
     type: String,  
     required: true
