@@ -8,12 +8,6 @@ To install the dependencies of the project:
 ```sh
 $ npm install
 ```
-## Start
-
-To run the server:
-```sh
-$ node server.js
-```
 
 ## Libraries/Frameworks
 
@@ -23,6 +17,16 @@ $ node server.js
 - `joi-objectid` - Validation ObjectID support for Joi
 - `winston` - Logger
 - `express-async-errors` - An async/await support hack for ExpressJS
+
+
+## Start
+
+Make sure `mongod` is up and running.
+
+To run the server:
+```sh
+$ node server.js
+```
 
 ## Dev Setup
 
