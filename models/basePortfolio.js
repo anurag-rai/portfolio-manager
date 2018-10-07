@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
+
 const BasePortfolio = mongoose.model('BasePortfolio', new mongoose.Schema({
   name: {
     type: String,
@@ -16,6 +17,7 @@ const BasePortfolio = mongoose.model('BasePortfolio', new mongoose.Schema({
   },
 }));
 
+
 function validateBasePortfolio(basePortfolio) {
   const schema = {
     name: Joi.string().trim().min(5).max(255).required(),
@@ -24,6 +26,7 @@ function validateBasePortfolio(basePortfolio) {
 
   return Joi.validate(basePortfolio, schema);
 }
+
 
 function validateBasePortfolioForPut(basePortfolio) {
   const schema = Joi.object().keys({

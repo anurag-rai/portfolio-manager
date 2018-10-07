@@ -1,7 +1,4 @@
 const validateObjectId = require('../middleware/validateObjectId');
-// const auth = require('../middleware/auth');
-// const admin = require('../middleware/admin');
-
 const {BasePortfolio, validate, validateBasePortfolioForPut} = require('../models/basePortfolio');
 const {Stock} = require('../models/stock');
 const mongoose = require('mongoose');
@@ -15,7 +12,6 @@ router.get('/', async (req, res) => {
 });
 
 
-// Add a new basePortfolio.
 // TODO: add auth middleware for authorization
 router.post('/', async (req, res) => {
   const { error } = validate(req.body); 
@@ -96,6 +92,7 @@ async function isValidName(name) {
     return true;
 }
 
+
 async function areStocksValid(stocks) {
     console.log("Stocks: ", stocks);
     const l = stocks.length;
@@ -109,6 +106,7 @@ async function areStocksValid(stocks) {
     return true;
 }
 
+
 async function isStockValid(stockName) {
     console.log("Stock: ", stockName);
     const stock = await Stock.find({name: stockName});
@@ -117,5 +115,6 @@ async function isStockValid(stockName) {
       return false;
     return true
 }
+
 
 module.exports = router;

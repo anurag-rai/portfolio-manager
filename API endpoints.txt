@@ -21,7 +21,7 @@ Get cumulative returns
 
 -------------------------------------------------------
 
-POST /portfolio/:portfolio/addTrade
+POST /api/trades/:portfolio/
 {
 	stock: "stockName",
 	quantity: integer,
@@ -34,7 +34,7 @@ POST /portfolio/:portfolio/addTrade
 
 -------------------------------------------------------
 
-PUT /portfolio/:portfolio/updateTrade
+PUT /api/trades/:portfolio/
 {
 	id: "TradeID",
 	stock: "stockName",
@@ -49,7 +49,7 @@ Return payload:
 
 -------------------------------------------------------
 
-DELETE /portfolio/:portfolio/removeTrade
+DELETE /api/trades/:portfolio/
 {
 	id: "TradeID"
 }

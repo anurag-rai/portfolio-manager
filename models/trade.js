@@ -28,7 +28,9 @@ const tradeSchema = new mongoose.Schema({
   }
 });
 
+
 const Trade = mongoose.model('Trade', tradeSchema);
+
 
 function validateTrade(trade) {
   const schema = {
@@ -39,6 +41,7 @@ function validateTrade(trade) {
   return Joi.validate(trade, schema);
 }
 
+
 function validateTradeForPut(trade) {
   const schema = Joi.object().keys({
     stock: Joi.string().min(1).max(50),
@@ -47,6 +50,7 @@ function validateTradeForPut(trade) {
   }).or('stock', 'quantity', 'action');
   return Joi.validate(trade, schema);
 }
+
 
 exports.tradeSchema = tradeSchema;
 exports.Trade = Trade; 

@@ -1,6 +1,4 @@
 const validateObjectId = require('../middleware/validateObjectId');
-// const auth = require('../middleware/auth');
-
 const {Trade, validate, validateTradeForPut} = require('../models/trade');
 const {Stock} = require('../models/stock');
 const tradeUtils = require('../utils/tradeUtils');
@@ -11,26 +9,21 @@ const router = express.Router();
 
 Fawn.init(mongoose);
 
-// Get all trades
 // TODO: add auth middleware for authorization
 router.get('/:portfolioId', async (req, res) => {
   //check if the portfolioId is valid
   const portfolio = await tradeUtils.checkValidPortfolio(req.params.portfolioId);
   if ( portfolio['valid'] === false )
     return res.status(400).send('The portfolio is not valid');
-  
-  console.log("portfolio: ", portfolio);
+
   //get trades from the portfolio
   const tradesList = await tradeUtils.getTradesFromPortfolio(portfolio['obj']);
-  console.log("TradesList: ", tradesList);
-  
   const trades = await Trade.find({ '_id' : {$in: tradesList}});
-  console.log("Trades: ", trades);
+  
   res.send(trades);
 });
 
 
-// Add a new trade.
 // TODO: add auth middleware for authorization
 router.post('/:portfolioId', async (req, res) => {
   const { error } = validate(req.body); 
@@ -53,10 +46,10 @@ router.post('/:portfolioId', async (req, res) => {
     stock: req.body.stock,
     quantity: req.body.quantity,
     action: req.body.action,
-    rate: stock[0]['rate']   //TODO: Tight coupling. Change this. Myabe us a Stock API?
+    rate: stock[0]['rate']
   });
 
-  // Need atomicity to save both Trade and to Portfolio
+  // Using Fawn: Need atomicity to save both Trade and to Portfolio
   try {
     new Fawn.Task()
       .save('trades', trade)
@@ -75,16 +68,26 @@ router.post('/:portfolioId', async (req, res) => {
 
 
 //TODO: Add middleware auth
-router.put('/:id', validateObjectId, async (req, res) => {
+router.put('/:portfolioId/:id', validateObjectId, async (req, res) => {
   const { error } = validateTradeForPut(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
 
+  //check if the portfolioId is valid
+  const portfolio = await tradeUtils.checkValidPortfolio(req.params.portfolioId);
+  if ( !portfolio['valid]'] === false )
+    return res.status(400).send('The portfolio is not valid');
+
   // TODO: Develop better logic than to check param and update.
+  // TODO: If server crashes, DB will be in inconsitent state. Use Fawn.
   let trade;
   if ( req.body.stock ) {
-    // check if the new stock exists
+    // check if stock in portfolio
+    if ( portfolio['obj']['stocks'].indexOf(req.body.stock) < 0 )
+      return res.status(400).send('The stock is not valid in this portfolio');
+
+    // check if stock is valid
     const stock = await Stock.find({name: req.body.stock});
-    if ( stock.length === 0)  return res.status(400).send('The stock with the given Name does not exist.'); 
+    if ( stock.length === 0)  return res.status(400).send('The stock with the given name does not exist.'); 
     trade = await Trade.findByIdAndUpdate(req.params.id, {stock: req.body.stock}, {
       new: true
     });
@@ -104,16 +107,45 @@ router.put('/:id', validateObjectId, async (req, res) => {
   res.send(trade);
 });
 
+
 //TODO: Add middleware auth
-router.delete('/:id', validateObjectId, async (req, res) => {
-  const trade = await Trade.findByIdAndRemove(req.params.id);
-  if (!trade) return res.status(404).send('The trade with the given ID was not found.');
+router.delete('/:portfolio/:id', validateObjectId, async (req, res) => {
+  //check if the portfolioId is valid
+  const portfolio = await tradeUtils.checkValidPortfolio(req.params.portfolioId);
+  if ( !portfolio['valid]'] === false )
+    return res.status(400).send('The portfolio is not valid');
+
+  const trade = await Trade.find({ _id: req.params.id});
+  if (trade.length === 0) return res.status(404).send('The trade with the given ID was not found.');
+  //Remove trade from portfolio also
+  let newTrades = portfolio['obj']['trades'].filter(trade => trade !== id);;
+  // Using Fawn: Need atomicity to save both Trade and to Portfolio
+  try {
+    new Fawn.Task()
+      .remove('trades', { _id: req.params.id })
+      .update('portfolios', { _id: req.params.portfolioId }, { 
+        $set: { trades: newTrades }
+      })
+      .run({useMongoose: true});
   
+    res.send(trade);
+  }
+  catch(ex) {
+    throw new Error(ex.message);
+    res.status(500).send('Something failed while deleting trade');
+  }
+
   res.send(trade);
 });
 
 
-router.get('/:id', validateObjectId, async (req, res) => {
+//TODO: Add middleware auth
+router.get('/:portfolio/:id', validateObjectId, async (req, res) => {
+  //check if the portfolioId is valid
+  const portfolio = await tradeUtils.checkValidPortfolio(req.params.portfolioId);
+  if ( !portfolio['valid]'] === false )
+    return res.status(400).send('The portfolio is not valid');
+
   const trade = await Trade.findById(req.params.id);
   if (trade.length === 0) return res.status(404).send('The trade with the given Name was not found.');
   

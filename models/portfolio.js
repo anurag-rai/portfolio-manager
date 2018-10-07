@@ -24,6 +24,7 @@ const Portfolio = mongoose.model('Portfolio', new mongoose.Schema({
   }
 }));
 
+
 function validatePortfolio(movie) {
   const schema = {
     name: Joi.string().min(1).max(50),
@@ -32,6 +33,7 @@ function validatePortfolio(movie) {
 
   return Joi.validate(movie, schema);
 }
+
 
 exports.Portfolio = Portfolio; 
 exports.validate = validatePortfolio;

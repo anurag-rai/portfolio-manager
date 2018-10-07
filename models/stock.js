@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
+
 const stockSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -16,7 +17,9 @@ const stockSchema = new mongoose.Schema({
   }
 });
 
+
 const Stock = mongoose.model('Stock', stockSchema);
+
 
 function validateStock(stock) {
   const schema = {
@@ -27,6 +30,7 @@ function validateStock(stock) {
   return Joi.validate(stock, schema);
 }
 
+
 function validateStockForPut(stock) {
   const schema = Joi.object().keys({
     name: Joi.string().regex(/^[a-zA-Z_]+$/).min(1).max(50),
@@ -35,6 +39,7 @@ function validateStockForPut(stock) {
 
   return Joi.validate(stock, schema);
 }
+
 
 exports.stockSchema = stockSchema;
 exports.Stock = Stock; 
